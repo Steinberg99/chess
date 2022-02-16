@@ -7,6 +7,12 @@ const chess = new Chess();
 const xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const yAxis = ["8", "7", "6", "5", "4", "3", "2", "1"];
 
+function grabPiece(e) {}
+
+function movePiece(e) {}
+
+function dropPiece(e) {}
+
 function ChessBoard() {
   const [chessBoardTiles, setChessBoardTiles] = useState([]);
 
@@ -42,7 +48,16 @@ function ChessBoard() {
     setChessBoardTiles(tiles); // Set the chess board tiles
   }, []);
 
-  return <div className="chess-board">{chessBoardTiles}</div>;
+  return (
+    <div
+      className="chess-board"
+      onMouseDown={(e) => grabPiece(e)}
+      onMouseMove={(e) => movePiece(e)}
+      onMouseUp={(e) => dropPiece(e)}
+    >
+      {chessBoardTiles}
+    </div>
+  );
 }
 
 export default ChessBoard;
