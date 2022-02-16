@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Chess } from "chess.js";
+import Chess from "chess.js";
 import Tile from "./Tile";
 import "./ChessBoard.css";
 
@@ -12,9 +12,8 @@ function ChessBoard() {
 
   // Add the tiles to the chess board, do this only once
   useEffect(() => {
-    console.log(chess.ascii());
-
     let tiles = []; // Empty array to temporarily store the tiles
+    let startingPositions = chess.board();
     for (let i = 0; i < yAxis.length; i++) {
       for (let j = 0; j < xAxis.length; j++) {
         if ((i + j) % 2 === 0) {
@@ -24,6 +23,7 @@ function ChessBoard() {
               key={`${xAxis[j]}${yAxis[i]}`} // Unique key
               tileCoordinates={`${xAxis[j]}${yAxis[i]}`} // Tile coordinates
               tileColor="light-tile" // Draw a light tile
+              piece={startingPositions[i][j]} // Add the piece to the tile
             />
           );
         } else {
@@ -33,6 +33,7 @@ function ChessBoard() {
               key={`${xAxis[j]}${yAxis[i]}`} // Unique key
               tileCoordinates={`${xAxis[j]}${yAxis[i]}`} // Tile coordinates
               tileColor="dark-tile" // Draw a dark tile
+              piece={startingPositions[i][j]} // Add the piece to the tile
             />
           );
         }
