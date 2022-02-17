@@ -11,6 +11,7 @@ function Tile({ tileCoordinates, tileColor, piece }) {
     pieceImageElement = (
       <div
         className="chess-piece"
+        position={tileCoordinates}
         style={{
           backgroundImage: `url(${process.env.PUBLIC_URL}/images/pieces/${pieceName}.png)`,
         }}
@@ -18,7 +19,11 @@ function Tile({ tileCoordinates, tileColor, piece }) {
     );
   }
 
-  return <div className={`tile ${tileColor}`}>{pieceImageElement} </div>;
+  return (
+    <div className={`tile ${tileColor}`} position={tileCoordinates}>
+      {pieceImageElement}
+    </div>
+  );
 }
 
 export default Tile;
