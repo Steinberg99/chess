@@ -8,7 +8,10 @@ function App() {
 
   return (
     <div className="App">
-      <ChessBoard />
+      <ChessBoard
+        setTakenWhitePieces={setTakenWhitePieces}
+        setTakenBlackPieces={setTakenBlackPieces}
+      />
     </div>
   );
 }
