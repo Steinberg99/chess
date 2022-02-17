@@ -8,7 +8,7 @@ const xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const yAxis = ["8", "7", "6", "5", "4", "3", "2", "1"];
 
 function ChessBoard() {
-  const [piecePositions, setPiecePositions] = useState(chess.board()); // Positions of the chess pieces on the board
+  const [pieceCoordinates, setPieceCoordinates] = useState(chess.board()); // Coordinates of the chess pieces on the board
 
   let chessBoardTiles = [];
 
@@ -20,31 +20,43 @@ function ChessBoard() {
           key={`${xAxis[j]}${yAxis[i]}`} // Unique key
           tileCoordinates={`${xAxis[j]}${yAxis[i]}`} // Tile coordinates
           tileColor={(i + j) % 2 === 0 ? "light-tile" : "dark-tile"} // Draw a light tile on an even number draw a dark tile on an odd number
-          piece={piecePositions[i][j]} // Add the piece to the tile
+          piece={pieceCoordinates[i][j]} // Add the piece to the tile
         />
       );
     }
   }
 
-  let selectedTilePosition;
+  let selectedPiece;
+  let startingCoordinates;
   function grabPiece(e) {
     if (e.target.classList.contains("chess-piece")) {
-      selectedTilePosition = e.target.getAttribute("position"); // Set the selected tile
+      selectedPiece = e.target.getAttribute("piece"); // Set the selected piece
+      startingCoordinates = e.target.getAttribute("coordinates"); // Set the starting coordinates
     }
   }
 
   function placePiece(e) {
-    // Move the piece on the selected tile
-    chess.move({
-      from: selectedTilePosition,
-      to: e.target.getAttribute("position"),
-    });
+    let destinationCoordinates = e.target.getAttribute("coordinates");
+    let desitnationY = destinationCoordinates.charAt(1);
 
-    console.log(
-      `from ${selectedTilePosition} to ${e.target.getAttribute("position")}`
-    );
+    // Check if a pawn can be promoted
+    if (
+      (selectedPiece === "wp" && desitnationY === "8") || // Promote white pawn
+      (selectedPiece === "bp" && desitnationY === "1") // Promote black pawn
+    ) {
+      chess.move({
+        from: startingCoordinates,
+        to: destinationCoordinates,
+        promotion: "q",
+      });
+    } else {
+      chess.move({
+        from: startingCoordinates,
+        to: destinationCoordinates,
+      });
+    }
 
-    setPiecePositions(chess.board());
+    setPieceCoordinates(chess.board()); // Update the piece coordinates
   }
 
   return (
