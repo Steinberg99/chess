@@ -5,10 +5,10 @@ function grabPiece(e) {}
 
 function Tile({ tileCoordinates, tileColor, piece }) {
   // When a piece is present display it on the tile
-  let pieceImageElement;
+  let pieceElement;
   if (piece) {
     let pieceName = piece.color + piece.type;
-    pieceImageElement = (
+    pieceElement = (
       <div
         className="chess-piece"
         piece={pieceName}
@@ -22,7 +22,7 @@ function Tile({ tileCoordinates, tileColor, piece }) {
 
   return (
     <div className={`tile ${tileColor}`} coordinates={tileCoordinates}>
-      {pieceImageElement}
+      {pieceElement}
     </div>
   );
 }
