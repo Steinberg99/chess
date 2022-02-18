@@ -1,0 +1,36 @@
+.player-row {
+  display: flex;
+  justify-content: space-between;
+
+  width: 600px;
+
+  padding: 1em 0;
+  margin: 0 auto;
+}
+
+.player-white {
+  background: white;
+
+  border: 1px solid black;
+
+  width: 2em;
+  height: 2em;
+}
+
+.player-black {
+  background: black;
+
+  width: 2em;
+  height: 2em;
+}
+
+.taken-chess-pieces {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+}
+
+.taken-chess-piece {
+  width: 2em;
+  height: 2em;
+}

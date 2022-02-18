@@ -1,11 +1,12 @@
 import "./GameOverModal.css";
 
 function GameOverModal({ winner }) {
-  return (
-    <div className="game-over-modal">
-      <h1>{winner}</h1>
-    </div>
-  );
+  let modal;
+  if (winner) {
+    modal = <h1>{winner}</h1>;
+  }
+
+  return <div className="game-over-modal">{modal}</div>;
 }
 
 export default GameOverModal;

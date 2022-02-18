@@ -3,9 +3,6 @@
   grid-template-columns: repeat(8, 1fr);
   grid-auto-rows: 1fr;
 
-  box-sizing: content-box;
-  border: 5px solid #210b2c;
-
   width: 600px;
   height: 600px;
 

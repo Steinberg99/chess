@@ -6,10 +6,15 @@ import "./ChessBoard.css";
 const chess = new Chess();
 const xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
 const yAxis = ["8", "7", "6", "5", "4", "3", "2", "1"];
-const boardWidth = 600;
 const pieceWidth = 75;
 
-function ChessBoard({ setTakenWhitePieces, setTakenBlackPieces, setWinner }) {
+function ChessBoard({
+  takenWhitePieces,
+  setTakenWhitePieces,
+  takenBlackPieces,
+  setTakenBlackPieces,
+  setWinner
+}) {
   const chessBoardRef = useRef(null);
   const [pieceCoordinates, setPieceCoordinates] = useState(chess.board()); // Coordinates of the chess pieces on the board
 
@@ -68,26 +73,46 @@ function ChessBoard({ setTakenWhitePieces, setTakenBlackPieces, setWinner }) {
       move = chess.move({
         from: startingCoordinates,
         to: destinationCoordinates,
-        promotion: "q", // Promote the pawn to a queen
+        promotion: "q" // TODO: Allow the user to choose to which piece he wants to promote
       });
     } else {
       move = chess.move({
         from: startingCoordinates,
-        to: destinationCoordinates,
+        to: destinationCoordinates
       });
     }
 
-    if (chess.in_checkmate()) setWinner(move.color);
+    checkCapture(move); // Check if a piece has been captured
+    if (chess.in_checkmate()) setWinner(move.color); // Check if a player has won the game
     selectedPiece.style.position = "static"; // Set the position of the piece to static to reset the piece to its original coordinates
-    setPieceCoordinates(chess.board()); // Update the piece coordinates
+    setPieceCoordinates(chess.board()); // Update the piece coordinates and rerender the board
   }
 
   function getOffset(el) {
     const rect = el.getBoundingClientRect();
     return {
       left: rect.left + window.scrollX,
-      top: rect.top + window.scrollY,
+      top: rect.top + window.scrollY
     };
+  }
+
+  function checkCapture(move) {
+    if (!move) return; // Return if no legal move was made
+    if (!move.captured) return; // Return if no piece has been captured
+
+    if (move.color === "w") {
+      // If white made the last move add the taken piece to the taken black pieces
+      setTakenBlackPieces((takenBlackPieces) => [
+        ...takenBlackPieces,
+        move.captured
+      ]);
+    } else {
+      // If black made the last move add the taken piece to the taken white pieces
+      setTakenWhitePieces((takenWhitePieces) => [
+        ...takenWhitePieces,
+        move.captured
+      ]);
+    }
   }
 
   return (
