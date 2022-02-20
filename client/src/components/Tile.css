@@ -1,3 +1,11 @@
+.light-tile {
+  background: #f2edeb;
+}
+
+.dark-tile {
+  background: #925e78;
+}
+
 .chess-piece {
   background: none;
   background-size: 100%;
@@ -14,10 +22,15 @@
   cursor: grabbing;
 }
 
-.light-tile {
-  background: #f2edeb;
-}
+.potential-move-indicator {
+  position: relative;
+  top: 25px;
+  left: 25px;
 
-.dark-tile {
-  background: #925e78;
+  background-color: white;
+  border: 5px solid black;
+  border-radius: 50%;
+
+  width: 25px;
+  height: 25px;
 }

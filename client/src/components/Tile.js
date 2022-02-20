@@ -1,9 +1,13 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import "./Tile.css";
 
-function grabPiece(e) {}
+function Tile({ onMount, tileCoordinates, tileColor, piece }) {
+  const [potentialMove, setPotentialMove] = useState(false);
 
-function Tile({ tileCoordinates, tileColor, piece }) {
+  useEffect(() => {
+    onMount([potentialMove, setPotentialMove]);
+  }, [onMount, potentialMove]);
+
   // When a piece is present display it on the tile
   let pieceElement;
   if (piece) {
@@ -14,15 +18,21 @@ function Tile({ tileCoordinates, tileColor, piece }) {
         piece={pieceName}
         coordinates={tileCoordinates}
         style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL}/images/pieces/${pieceName}.png)`,
+          backgroundImage: `url(${process.env.PUBLIC_URL}/images/pieces/${pieceName}.png)`
         }}
       ></div>
     );
   }
 
+  let potentialMoveElement;
+  if (potentialMove) {
+    potentialMoveElement = <div className="potential-move-indicator"></div>;
+  }
+
   return (
     <div className={`tile ${tileColor}`} coordinates={tileCoordinates}>
       {pieceElement}
+      {potentialMoveElement}
     </div>
   );
 }

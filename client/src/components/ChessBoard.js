@@ -19,12 +19,19 @@ function ChessBoard({
   const [pieceCoordinates, setPieceCoordinates] = useState(chess.board()); // Coordinates of the chess pieces on the board
 
   let chessBoardTiles = [];
+  let potentialMoveIndicators = [];
+  let setPotentialMoveIndicators = [];
+  const onTileMount = (dataFromTile) => {
+    potentialMoveIndicators.push(dataFromTile[0]);
+    setPotentialMoveIndicators.push(dataFromTile[1]);
+  };
 
   // Add the tiles and pieces to the chess board
   for (let i = 0; i < yAxis.length; i++) {
     for (let j = 0; j < xAxis.length; j++) {
       chessBoardTiles.push(
         <Tile
+          onMount={onTileMount}
           key={`${xAxis[j]}${yAxis[i]}`} // Unique key
           tileCoordinates={`${xAxis[j]}${yAxis[i]}`} // Tile coordinates
           tileColor={(i + j) % 2 === 0 ? "light-tile" : "dark-tile"} // Draw a light tile on an even number draw a dark tile on an odd number
@@ -40,7 +47,19 @@ function ChessBoard({
     if (e.target.classList.contains("chess-piece")) {
       selectedPiece = e.target; // Set the selected piece
       startingCoordinates = e.target.getAttribute("coordinates"); // Set the starting coordinates
+
+      let potentialMoves = chess.moves({ square: startingCoordinates });
+      potentialMoves.forEach((move) => {
+        let index = coordinatesToIndex(move);
+        setPotentialMoveIndicators[index](!potentialMoveIndicators[index]);
+      });
     }
+  }
+
+  function coordinatesToIndex(coordinates) {
+    let xAxisIndex = xAxis.indexOf(coordinates.charAt(0));
+    let yAxisIndex = yAxis.indexOf(coordinates.charAt(1));
+    return xAxisIndex + yAxisIndex * 8;
   }
 
   function movePiece(e) {
@@ -82,6 +101,9 @@ function ChessBoard({
       });
     }
 
+    setPotentialMoveIndicators.forEach((moveIndicator) => {
+      moveIndicator(false); // Reset the piece move incators
+    });
     checkCapture(move); // Check if a piece has been captured
     if (chess.in_checkmate()) setWinner(move.color); // Check if a player has won the game
     selectedPiece.style.position = "static"; // Set the position of the piece to static to reset the piece to its original coordinates
