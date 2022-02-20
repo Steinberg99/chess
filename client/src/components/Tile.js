@@ -25,14 +25,14 @@ function Tile({ onMount, tileCoordinates, tileColor, piece }) {
   }
 
   let potentialMoveElement;
-  if (potentialMove) {
+  if (potentialMove && !piece) {
     potentialMoveElement = <div className="potential-move-indicator"></div>;
   }
 
   return (
     <div className={`tile ${tileColor}`} coordinates={tileCoordinates}>
-      {pieceElement}
       {potentialMoveElement}
+      {pieceElement}
     </div>
   );
 }

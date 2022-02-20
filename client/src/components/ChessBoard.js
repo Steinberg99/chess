@@ -48,10 +48,14 @@ function ChessBoard({
       selectedPiece = e.target; // Set the selected piece
       startingCoordinates = e.target.getAttribute("coordinates"); // Set the starting coordinates
 
-      let potentialMoves = chess.moves({ square: startingCoordinates });
+      let potentialMoves = chess.moves({
+        square: startingCoordinates,
+        verbose: true
+      }); // Get the potential moves of the selected piece
+      console.log(potentialMoves);
       potentialMoves.forEach((move) => {
-        let index = coordinatesToIndex(move);
-        setPotentialMoveIndicators[index](!potentialMoveIndicators[index]);
+        let index = coordinatesToIndex(move.to); // Get the index of the corresponding move indicator for the specific move
+        setPotentialMoveIndicators[index](true); // Set the move indicator to true
       });
     }
   }
