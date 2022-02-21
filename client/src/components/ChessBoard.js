@@ -1,22 +1,39 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import Chess from "chess.js";
 import Tile from "./Tile";
 import "./ChessBoard.css";
 
 const chess = new Chess();
-const xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
-const yAxis = ["8", "7", "6", "5", "4", "3", "2", "1"];
 const pieceWidth = 75;
 
 function ChessBoard({
+  socket,
+  playerColor,
+  enemyMove,
   takenWhitePieces,
   setTakenWhitePieces,
   takenBlackPieces,
   setTakenBlackPieces,
   setWinner
 }) {
+  let xAxis = ["a", "b", "c", "d", "e", "f", "g", "h"];
+  let yAxis = ["8", "7", "6", "5", "4", "3", "2", "1"];
+  // Reverse the x and y axis is the player is playing as black
+  if (playerColor === "b") {
+    xAxis = ["h", "g", "f", "e", "d", "c", "b", "a"];
+    yAxis = ["1", "2", "3", "4", "5", "6", "7", "8"];
+  }
+
   const chessBoardRef = useRef(null);
   const [pieceCoordinates, setPieceCoordinates] = useState(chess.board()); // Coordinates of the chess pieces on the board
+
+  useEffect(() => {
+    if (enemyMove && enemyMove.color !== playerColor) {
+      console.log(chess.move({ from: enemyMove.from, to: enemyMove.to }));
+      setPieceCoordinates(chess.board());
+      console.log(`From ${enemyMove.from} to ${enemyMove.to}`);
+    }
+  }, [enemyMove]);
 
   let chessBoardTiles = [];
   let potentialMoveIndicators = [];
@@ -35,7 +52,11 @@ function ChessBoard({
           key={`${xAxis[j]}${yAxis[i]}`} // Unique key
           tileCoordinates={`${xAxis[j]}${yAxis[i]}`} // Tile coordinates
           tileColor={(i + j) % 2 === 0 ? "light-tile" : "dark-tile"} // Draw a light tile on an even number draw a dark tile on an odd number
-          piece={pieceCoordinates[i][j]} // Add the piece to the tile
+          piece={
+            playerColor === "w"
+              ? pieceCoordinates[i][j] // Add the piece to the tile
+              : pieceCoordinates[Math.abs(i - 7)][Math.abs(j - 7)] // Add the pieces in reversed order if the player is playing as black
+          }
         />
       );
     }
@@ -52,12 +73,13 @@ function ChessBoard({
         square: startingCoordinates,
         verbose: true
       }); // Get the potential moves of the selected piece
-      console.log(potentialMoves);
       potentialMoves.forEach((move) => {
         let index = coordinatesToIndex(move.to); // Get the index of the corresponding move indicator for the specific move
         setPotentialMoveIndicators[index](true); // Set the move indicator to true
       });
     }
+
+    console.log(startingCoordinates);
   }
 
   function coordinatesToIndex(coordinates) {
@@ -112,6 +134,7 @@ function ChessBoard({
     if (chess.in_checkmate()) setWinner(move.color); // Check if a player has won the game
     selectedPiece.style.position = "static"; // Set the position of the piece to static to reset the piece to its original coordinates
     setPieceCoordinates(chess.board()); // Update the piece coordinates and rerender the board
+    if (move) socket.current.emit("move", move);
   }
 
   function getOffset(el) {
@@ -140,6 +163,11 @@ function ChessBoard({
       ]);
     }
   }
+
+  // socket.current.on("enemyMove", (move) => {
+  //   console.log(move);
+  //   chess.move(move);
+  // });
 
   return (
     <div
